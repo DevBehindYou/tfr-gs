@@ -72,7 +72,7 @@ export default function BlogCard({ blog, index = 0 }: BlogCardProps) {
               ))}
             </div>
 
-            <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition group-hover:translate-x-1">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition group-hover:translate-x-1">
               <ArrowRight className="h-5 w-5" />
             </span>
           </div>
