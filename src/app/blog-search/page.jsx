@@ -67,7 +67,7 @@ export default function BlogSearchPage() {
 
   return (
     <main className="w-full bg-transparent p-0 m-0">
-      <div className="w-full overflow-hidden rounded-[18px] border-white/50 border-2 bg-[#0b0712] shadow-2xl">
+      <div className="w-full overflow-hidden rounded-[18px] border-white/60 border-3 bg-[#0b0712] shadow-2xl">
         <div className="relative h-125 w-full overflow-hidden md:h-125">
           <video
             autoPlay
