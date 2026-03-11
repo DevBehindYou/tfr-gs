@@ -66,9 +66,9 @@ export default function BlogSearchPage() {
   };
 
   return (
-    <main className="min-h-screen bg-transparent p-6 md:p-10">
-      <div className="mx-auto flex min-h-[88vh] w-full max-w-7xl flex-col overflow-hidden rounded-[28px] border border-black/10 bg-[#0b0712] shadow-2xl">
-        <div className="relative flex-1 overflow-hidden">
+    <main className="w-full bg-transparent p-0 m-0">
+      <div className="w-full overflow-hidden rounded-[18px] border border-white/10 bg-[#0b0712] shadow-2xl">
+        <div className="relative h-125 w-full overflow-hidden md:h-125">
           <video
             autoPlay
             muted
@@ -142,7 +142,7 @@ export default function BlogSearchPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 12 }}
                   transition={{ duration: 0.35 }}
-                  className="mt-8 flex-1 overflow-y-auto pr-1"
+                  className="mt-4 flex-1 overflow-y-auto pr-1"
                 >
                   <div className="mb-5 flex items-center justify-between">
                     <div>
@@ -155,7 +155,7 @@ export default function BlogSearchPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {filteredBlogs.map((blog, index) => (
                       <BlogCard key={blog.id} blog={blog} index={index} />
                     ))}
