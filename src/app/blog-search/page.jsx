@@ -109,8 +109,10 @@ export default function BlogSearchPage() {
                 )}
 
                 <div className="rounded-full border border-white/15 bg-white/10 p-2 shadow-[0_10px_40px_rgba(0,0,0,0.25)] backdrop-blur-xl">
-                  <div className="flex items-center gap-2 rounded-full bg-black/20 px-3 py-2">
-                    <Search className="h-5 w-5 text-white/70" />
+                  <div className="flex items-center gap-1 rounded-full bg-black/20 px-2 py-2 sm:gap-2 sm:px-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center">
+                      <Search className="h-5 w-5 text-white/70" />
+                    </div>
 
                     <input
                       type="text"
@@ -120,15 +122,15 @@ export default function BlogSearchPage() {
                         if (e.key === "Enter") handleSearch();
                       }}
                       placeholder="Search blogs, topics, authors..."
-                      className="h-12 flex-1 bg-transparent px-2 text-sm text-white outline-none placeholder:text-white/40 md:text-base"
+                      className="h-10 min-w-0 flex-1 bg-transparent px-1 text-sm text-white outline-none placeholder:text-white/40 sm:h-12 sm:px-2 sm:text-base"
                     />
 
                     <button
                       onClick={handleSearch}
-                      className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-black transition hover:scale-105"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-black transition hover:scale-105 sm:h-12 sm:w-12"
                       aria-label="Search"
                     >
-                      <ArrowRight className="h-5 w-5" />
+                      <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>
                   </div>
                 </div>
