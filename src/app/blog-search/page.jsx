@@ -7,17 +7,17 @@ import BlogCard from "../components/BlogCard";
 
 const blogs = [
   {
-    id: 1,
-    title: "How AI Search Is Changing Blog Discovery",
-    excerpt:
-      "A practical look at search UX patterns, semantic matching, and what modern content discovery should feel like.",
-    author: "Vaibhav Kishnani",
-    date: "March 12, 2026",
-    image:
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
-    href: "/blog/ai-search-blog-discovery",
-    tags: ["AI Search", "UX", "Blogs"],
-  },
+  id: 1,
+  title: "How AI Search Is Changing Blog Discovery",
+  excerpt: "A practical look at search UX patterns, semantic matching, and what modern content discovery should feel like.",
+  author: "Vaibhav Kishnani",
+  date: "March 12, 2026",
+  image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
+  href: "/blog/ai-search-blog-discovery",
+  tags: ["AI Search", "UX", "Blogs"],
+  platform: "Medium",
+  platformIcon: "/icons/medium.png"
+},
   {
     id: 2,
     title: "Next.js Blog Architecture for Fast Search",

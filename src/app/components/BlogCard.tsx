@@ -15,6 +15,8 @@ type BlogCardProps = {
     image: string;
     href: string;
     tags?: string[];
+    platform?: string;
+    platformIcon?: string;
   };
   index?: number;
 };
@@ -30,7 +32,17 @@ export default function BlogCard({ blog, index = 0 }: BlogCardProps) {
         href={blog.href}
         className="group block overflow-hidden rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl transition hover:border-white/20 hover:bg-white/15"
       >
-        <div className="relative h-52 overflow-hidden">
+        <div className="relative h-40 overflow-hidden">
+          {blog.platformIcon && (
+            <div className="absolute left-3 top-3 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/25 backdrop-blur-md">
+              <img
+                src={blog.platformIcon}
+                alt={blog.platform || "Platform"}
+                className="h-7 w-7 shrink-0 object-contain"
+              />
+            </div>
+          )}
+
           <img
             src={blog.image}
             alt={blog.title}
@@ -39,12 +51,12 @@ export default function BlogCard({ blog, index = 0 }: BlogCardProps) {
           <div className="absolute inset-0 bg-linear-to-t from-black/50 via-black/10 to-transparent" />
         </div>
 
-        <div className="p-5 md:p-6">
-          <h3 className="text-xl font-semibold leading-tight text-white">
+        <div className="p-4 md:p-5">
+          <h3 className="text-md md:text-lg font-semibold leading-tight text-white">
             {blog.title}
           </h3>
 
-          <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-white/70">
+          <div className="mt-2 flex flex-wrap items-center gap-4 text-[12px] md:text-sm text-white/60">
             <span className="inline-flex items-center gap-2">
               <CalendarDays className="h-4 w-4" />
               {blog.date}
@@ -56,11 +68,11 @@ export default function BlogCard({ blog, index = 0 }: BlogCardProps) {
             </span>
           </div>
 
-          <p className="mt-4 text-sm leading-6 text-white/80 md:text-base">
+          <p className="mt-4 text-[14px] md:text-sm leading-6 text-white/80">
             {blog.excerpt}
           </p>
 
-          <div className="mt-5 flex items-center justify-between">
+          <div className="mt-2 flex items-center justify-between">
             <div className="flex flex-wrap gap-2">
               {blog.tags?.map((tag) => (
                 <span
