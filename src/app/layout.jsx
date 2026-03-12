@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Blog Search",
-  description: "Search and discover blogs",
+  title: "TFR — Admin Panel",
+  description: "Admin Panel",
 };
 
 export default function RootLayout({ children }) {

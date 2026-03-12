@@ -220,7 +220,7 @@ export default function AdminBlogsPage() {
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-2xl font-semibold text-[#111111] md:text-3xl">
-                Blog Admin Panel
+                TFR — Blog CMS Admin Panel
               </h1>
               <p className="mt-1 text-sm text-[#666666]">
                 Add, edit, and delete blog records from one place.

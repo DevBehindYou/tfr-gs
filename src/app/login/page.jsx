@@ -52,7 +52,7 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-[#f5f5f7] p-4">
       <div className="w-full max-w-md rounded-[28px] border border-black/5 bg-white p-6 shadow-sm md:p-8">
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-semibold text-[#111111]">Admin Login</h1>
+          <h1 className="text-2xl font-semibold text-[#111111]">TFR — Admin Login</h1>
           <p className="mt-2 text-sm text-[#666666]">
             Sign in to manage your blog records.
           </p>
