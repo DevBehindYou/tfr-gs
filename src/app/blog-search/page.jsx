@@ -204,7 +204,7 @@ export default function BlogSearchPage() {
       <div className="w-full overflow-hidden rounded-[18px] border border-white/10 bg-[#0b0712] shadow-2xl">
         <div
           ref={containerRef}
-          className="relative h-135 w-full overflow-hidden"
+          className="relative h-129 w-full overflow-hidden"
         >
           <video
             autoPlay
