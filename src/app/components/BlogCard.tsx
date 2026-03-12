@@ -28,8 +28,10 @@ export default function BlogCard({ blog, index = 0 }: BlogCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06 }}
     >
-      <Link
+      <a
         href={blog.href}
+        target="_blank"
+        rel="noopener noreferrer"
         className="group block overflow-hidden rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl transition hover:border-white/20 hover:bg-white/15"
       >
         <div className="relative h-40 overflow-hidden">
@@ -89,7 +91,7 @@ export default function BlogCard({ blog, index = 0 }: BlogCardProps) {
             </span>
           </div>
         </div>
-      </Link>
+      </a>
     </motion.div>
   );
 }
