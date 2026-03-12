@@ -1,16 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useAnimationControls,
+} from "framer-motion";
 import { Search, ArrowRight } from "lucide-react";
 import BlogCard from "../components/BlogCard";
 
 export default function BlogSearchPage() {
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
-  const [hasSearched, setHasSearched] = useState(false);
+  const [stage, setStage] = useState("idle");
+  const [showResults, setShowResults] = useState(false);
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [resultsKey, setResultsKey] = useState(0);
+  const [layout, setLayout] = useState(null);
+
+  const containerRef = useRef(null);
+
+  const titleControls = useAnimationControls();
+  const searchControls = useAnimationControls();
+  const resultsControls = useAnimationControls();
 
   const fetchBlogs = async (searchText = "") => {
     try {
@@ -42,17 +55,157 @@ export default function BlogSearchPage() {
     fetchBlogs();
   }, []);
 
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const updateLayout = () => {
+      const rect = containerRef.current.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+      const sideGap = 16;
+
+      const initialWidth = Math.min(width - sideGap * 2, 760);
+      const topCenterWidth = Math.min(width - sideGap * 2, 560);
+      const finalWidth = width < 768 ? width - sideGap * 2 : 440;
+
+      const initialLeft = (width - initialWidth) / 2;
+      const topCenterLeft = (width - topCenterWidth) / 2;
+      const finalLeft = width < 768 ? sideGap : width - sideGap - finalWidth;
+
+      const initialTop = Math.max(190, height / 2 - 28);
+
+      setLayout({
+        initialWidth,
+        topCenterWidth,
+        finalWidth,
+        initialLeft,
+        topCenterLeft,
+        finalLeft,
+        initialTop,
+      });
+    };
+
+    updateLayout();
+
+    const resizeObserver = new ResizeObserver(updateLayout);
+    resizeObserver.observe(containerRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!layout) return;
+
+    if (stage === "idle") {
+      titleControls.set({ opacity: 1, y: 0 });
+      searchControls.set({
+        top: layout.initialTop,
+        left: layout.initialLeft,
+        width: layout.initialWidth,
+      });
+      resultsControls.set({ opacity: 0, y: 40 });
+    }
+
+    if (stage === "searched") {
+      titleControls.set({ opacity: 0, y: -24 });
+      searchControls.set({
+        top: 16,
+        left: layout.finalLeft,
+        width: layout.finalWidth,
+      });
+      resultsControls.set({ opacity: 1, y: 0 });
+    }
+  }, [layout, stage, titleControls, searchControls, resultsControls]);
+
   const handleSearch = async () => {
+    if (!layout) return;
+
     const trimmedQuery = query.trim();
+    const requestPromise = fetchBlogs(trimmedQuery);
+
+    if (stage === "idle") {
+      setSubmittedQuery(trimmedQuery);
+
+      await titleControls.start({
+        opacity: 0,
+        y: -24,
+        transition: {
+          duration: 0.30,
+          ease: "easeOut",
+        },
+      });
+
+      await searchControls.start({
+        top: 16,
+        left: layout.topCenterLeft,
+        width: layout.topCenterWidth,
+        transition: {
+          duration: 0.70,
+          ease: [0.22, 1, 0.36, 1],
+        },
+      });
+
+      await searchControls.start({
+        left: layout.finalLeft,
+        width: layout.finalWidth,
+        transition: {
+          duration: 0.80,
+          ease: [0.22, 1, 0.36, 1],
+        },
+      });
+
+      setStage("searched");
+      setShowResults(true);
+      setResultsKey((prev) => prev + 1);
+
+      resultsControls.set({ opacity: 0, y: 42 });
+
+      await requestPromise;
+
+      await resultsControls.start({
+        opacity: 1,
+        y: 0,
+        transition: {
+          duration: 0.50,
+          ease: "easeOut",
+        },
+      });
+
+      return;
+    }
+
     setSubmittedQuery(trimmedQuery);
-    setHasSearched(true);
-    await fetchBlogs(trimmedQuery);
+
+    await resultsControls.start({
+      opacity: 0,
+      y: 20,
+      transition: {
+        duration: 0.30,
+        ease: "easeInOut",
+      },
+    });
+
+    await requestPromise;
+
+    setResultsKey((prev) => prev + 1);
+
+    await resultsControls.start({
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.30,
+        ease: "easeOut",
+      },
+    });
   };
 
   return (
     <main className="w-full bg-transparent p-0 m-0">
       <div className="w-full overflow-hidden rounded-[18px] border border-white/10 bg-[#0b0712] shadow-2xl">
-        <div className="relative h-125 w-full overflow-hidden">
+        <div
+          ref={containerRef}
+          className="relative h-135 w-full overflow-hidden"
+        >
           <video
             autoPlay
             muted
@@ -66,102 +219,138 @@ export default function BlogSearchPage() {
           <div className="absolute inset-0 bg-black/45" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(199,91,255,0.20),transparent_24%),radial-gradient(circle_at_30%_30%,rgba(59,130,246,0.18),transparent_18%),linear-gradient(135deg,rgba(3,3,3,0.55)_0%,rgba(9,6,18,0.65)_35%,rgba(19,9,22,0.6)_70%,rgba(9,9,9,0.7)_100%)]" />
 
-          <div className="relative z-10 flex h-full flex-col p-4 md:p-5">
+          <motion.div
+            animate={titleControls}
+            className="absolute inset-x-4 top-27.5 z-10 text-center md:inset-x-6"
+          >
+            <h1 className="text-3xl font-semibold tracking-tight text-white md:text-5xl">
+              Search blogs like ChatGPT
+            </h1>
+            <p className="mx-auto mt-3 max-w-2xl text-sm text-white/70 md:text-base">
+              Type a topic, press Enter, and the search bar moves to the top
+              right as the matching blog cards load.
+            </p>
+          </motion.div>
+
+          {layout && (
             <motion.div
-              layout
-              transition={{ type: "spring", stiffness: 120, damping: 18 }}
-              className={`flex w-full ${hasSearched ? "justify-end" : "flex-1 items-center justify-center"}`}
+              animate={searchControls}
+              className="absolute z-20"
             >
+              <SearchBar
+                query={query}
+                setQuery={setQuery}
+                handleSearch={handleSearch}
+              />
+            </motion.div>
+          )}
+
+          <AnimatePresence>
+            {showResults && (
               <motion.div
-                layout
-                transition={{ type: "spring", stiffness: 120, damping: 18 }}
-                className={`w-full ${hasSearched ? "max-w-md" : "max-w-3xl"}`}
+                key={resultsKey}
+                animate={resultsControls}
+                initial={false}
+                className="custom-scrollbar absolute inset-0 z-10 overflow-y-auto px-4 pb-4 pt-28 md:px-5 md:pb-5 md:pt-28"
               >
-                {!hasSearched && (
+                <div className="mb-4">
+                  <h2 className="text-xl font-semibold text-white md:text-2xl">
+                    {submittedQuery
+                      ? `Results for "${submittedQuery}"`
+                      : "All blogs"}
+                  </h2>
+                  <p className="mt-1 text-sm text-white/60">
+                    {loading
+                      ? "Loading..."
+                      : `${blogs.length} result${blogs.length === 1 ? "" : "s"}`}
+                  </p>
+                </div>
+
+                {loading ? (
                   <motion.div
-                    initial={{ opacity: 0, y: 18 }}
+                    initial={{ opacity: 0, y: 26 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mb-6 text-center"
+                    className="text-sm text-white/70"
                   >
-                    <h1 className="text-3xl font-semibold tracking-tight text-white md:text-5xl">
-                      Search blogs like ChatGPT
-                    </h1>
-                    <p className="mx-auto mt-3 max-w-2xl text-sm text-white/70 md:text-base">
-                      Type a topic, press Enter, and the search bar moves to the top right as the matching blog cards load.
-                    </p>
+                    Loading blogs...
+                  </motion.div>
+                ) : blogs.length > 0 ? (
+                  <motion.div
+                    key={`grid-${submittedQuery}-${blogs.length}`}
+                    variants={{
+                      hidden: {},
+                      show: {
+                        transition: {
+                          staggerChildren: 0.08,
+                          delayChildren: 0.08,
+                        },
+                      },
+                    }}
+                    initial="hidden"
+                    animate="show"
+                    className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+                  >
+                    {blogs.map((blog, index) => (
+                      <motion.div
+                        key={blog._id || blog.id || index}
+                        variants={{
+                          hidden: { opacity: 0, y: 44 },
+                          show: { opacity: 1, y: 0 },
+                        }}
+                        transition={{
+                          duration: 0.38,
+                          ease: "easeOut",
+                        }}
+                      >
+                        <BlogCard blog={blog} index={index} />
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, y: 26 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/70"
+                  >
+                    No blogs found. Try another search term.
                   </motion.div>
                 )}
-
-                <div className="rounded-full border border-white/15 bg-white/10 p-2 shadow-[0_10px_40px_rgba(0,0,0,0.25)] backdrop-blur-xl">
-                  <div className="flex items-center gap-1 rounded-full bg-black/20 px-2 py-2 sm:gap-2 sm:px-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center">
-                      <Search className="h-5 w-5 text-white/70" />
-                    </div>
-
-                    <input
-                      type="text"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") handleSearch();
-                      }}
-                      placeholder="Search blogs, topics, authors..."
-                      className="h-10 min-w-0 flex-1 bg-transparent px-1 text-sm text-white outline-none placeholder:text-white/40 sm:h-12 sm:px-2 sm:text-base"
-                    />
-
-                    <button
-                      onClick={handleSearch}
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-black transition hover:scale-105 sm:h-12 sm:w-12"
-                      aria-label="Search"
-                    >
-                      <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
-                    </button>
-                  </div>
-                </div>
               </motion.div>
-            </motion.div>
-
-            <AnimatePresence>
-              {hasSearched && (
-                <motion.div
-                  initial={{ opacity: 0, y: 22 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 12 }}
-                  transition={{ duration: 0.35 }}
-                  className="mt-4 flex-1 overflow-y-auto pr-1"
-                >
-                  <div className="mb-4">
-                    <h2 className="text-xl font-semibold text-white md:text-2xl">
-                      {submittedQuery ? `Results for "${submittedQuery}"` : "All blogs"}
-                    </h2>
-                    <p className="mt-1 text-sm text-white/60">
-                      {loading ? "Loading..." : `${blogs.length} result${blogs.length === 1 ? "" : "s"}`}
-                    </p>
-                  </div>
-
-                  {loading ? (
-                    <div className="text-sm text-white/70">Loading blogs...</div>
-                  ) : blogs.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                      {blogs.map((blog, index) => (
-                        <BlogCard
-                          key={blog._id || blog.id}
-                          blog={blog}
-                          index={index}
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/70">
-                      No blogs found. Try another search term.
-                    </div>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </main>
+  );
+}
+
+function SearchBar({ query, setQuery, handleSearch }) {
+  return (
+    <div className="rounded-full border border-white/15 bg-white/10 p-2 shadow-[0_10px_40px_rgba(0,0,0,0.25)] backdrop-blur-xl">
+      <div className="flex items-center gap-1 rounded-full bg-black/20 px-2 py-2 sm:gap-2 sm:px-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center">
+          <Search className="h-5 w-5 text-white/70" />
+        </div>
+
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSearch();
+          }}
+          placeholder="Search blogs, topics, authors..."
+          className="h-10 min-w-0 flex-1 bg-transparent px-1 text-sm text-white outline-none placeholder:text-white/40 sm:h-12 sm:px-2 sm:text-base"
+        />
+
+        <button
+          onClick={handleSearch}
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-black transition hover:scale-105 sm:h-12 sm:w-12"
+          aria-label="Search"
+        >
+          <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
+        </button>
+      </div>
+    </div>
   );
 }
