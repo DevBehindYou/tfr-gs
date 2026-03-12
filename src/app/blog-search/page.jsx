@@ -1,74 +1,58 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, ArrowRight } from "lucide-react";
 import BlogCard from "../components/BlogCard";
-
-const blogs = [
-  {
-  id: 1,
-  title: "How AI Search Is Changing Blog Discovery",
-  excerpt: "A practical look at search UX patterns, semantic matching, and what modern content discovery should feel like.",
-  author: "Vaibhav Kishnani",
-  date: "March 12, 2026",
-  image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
-  href: "/blog/ai-search-blog-discovery",
-  tags: ["AI Search", "UX", "Blogs"],
-  platform: "Medium",
-  platformIcon: "/icons/medium.png"
-},
-  {
-    id: 2,
-    title: "Next.js Blog Architecture for Fast Search",
-    excerpt:
-      "Set up a clean content structure with server routes, MongoDB Atlas, and a responsive blog listing experience.",
-    author: "Content Whale Team",
-    date: "March 10, 2026",
-    image:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
-    href: "/blog/nextjs-blog-architecture",
-    tags: ["Next.js", "MongoDB", "Architecture"],
-  },
-  {
-    id: 3,
-    title: "Designing a Search First Blog Interface",
-    excerpt:
-      "Learn how to create a search led layout where the input becomes the anchor element after the results load.",
-    author: "Product Team",
-    date: "March 8, 2026",
-    image:
-      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=80",
-    href: "/blog/search-first-blog-interface",
-    tags: ["Design", "Search", "Frontend"],
-  },
-];
 
 export default function BlogSearchPage() {
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredBlogs = useMemo(() => {
-    if (!submittedQuery.trim()) return blogs;
+  const fetchBlogs = async (searchText = "") => {
+    try {
+      setLoading(true);
 
-    return blogs.filter((blog) => {
-      const searchableText =
-        `${blog.title} ${blog.excerpt} ${blog.author} ${blog.tags.join(" ")}`.toLowerCase();
+      const res = await fetch(
+        `/api/blogs${searchText ? `?query=${encodeURIComponent(searchText)}` : ""}`,
+        {
+          cache: "no-store",
+        }
+      );
 
-      return searchableText.includes(submittedQuery.toLowerCase());
-    });
-  }, [submittedQuery]);
+      const data = await res.json();
 
-  const handleSearch = () => {
-    setSubmittedQuery(query.trim());
+      if (data.success) {
+        setBlogs(data.blogs);
+      } else {
+        setBlogs([]);
+      }
+    } catch (error) {
+      setBlogs([]);
+      console.error("Error fetching blogs:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
+  const handleSearch = async () => {
+    const trimmedQuery = query.trim();
+    setSubmittedQuery(trimmedQuery);
     setHasSearched(true);
+    await fetchBlogs(trimmedQuery);
   };
 
   return (
     <main className="w-full bg-transparent p-0 m-0">
-      <div className="w-full overflow-hidden rounded-[18px] border-white/60 border-3 bg-[#0b0712] shadow-2xl">
-        <div className="relative h-125 w-full overflow-hidden md:h-125">
+      <div className="w-full overflow-hidden rounded-[18px] border border-white/10 bg-[#0b0712] shadow-2xl">
+        <div className="relative h-125 w-full overflow-hidden">
           <video
             autoPlay
             muted
@@ -82,7 +66,7 @@ export default function BlogSearchPage() {
           <div className="absolute inset-0 bg-black/45" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(199,91,255,0.20),transparent_24%),radial-gradient(circle_at_30%_30%,rgba(59,130,246,0.18),transparent_18%),linear-gradient(135deg,rgba(3,3,3,0.55)_0%,rgba(9,6,18,0.65)_35%,rgba(19,9,22,0.6)_70%,rgba(9,9,9,0.7)_100%)]" />
 
-          <div className="relative z-10 flex h-full flex-col p-5 md:p-8">
+          <div className="relative z-10 flex h-full flex-col p-4 md:p-5">
             <motion.div
               layout
               transition={{ type: "spring", stiffness: 120, damping: 18 }}
@@ -146,24 +130,28 @@ export default function BlogSearchPage() {
                   transition={{ duration: 0.35 }}
                   className="mt-4 flex-1 overflow-y-auto pr-1"
                 >
-                  <div className="mb-5 flex items-center justify-between">
-                    <div>
-                      <h2 className="text-xl font-semibold text-white md:text-2xl">
-                        {submittedQuery ? `Results for “${submittedQuery}”` : "All blogs"}
-                      </h2>
-                      <p className="mt-1 text-sm text-white/60">
-                        {filteredBlogs.length} result{filteredBlogs.length === 1 ? "" : "s"}
-                      </p>
+                  <div className="mb-4">
+                    <h2 className="text-xl font-semibold text-white md:text-2xl">
+                      {submittedQuery ? `Results for "${submittedQuery}"` : "All blogs"}
+                    </h2>
+                    <p className="mt-1 text-sm text-white/60">
+                      {loading ? "Loading..." : `${blogs.length} result${blogs.length === 1 ? "" : "s"}`}
+                    </p>
+                  </div>
+
+                  {loading ? (
+                    <div className="text-sm text-white/70">Loading blogs...</div>
+                  ) : blogs.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      {blogs.map((blog, index) => (
+                        <BlogCard
+                          key={blog._id || blog.id}
+                          blog={blog}
+                          index={index}
+                        />
+                      ))}
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {filteredBlogs.map((blog, index) => (
-                      <BlogCard key={blog.id} blog={blog} index={index} />
-                    ))}
-                  </div>
-
-                  {filteredBlogs.length === 0 && (
+                  ) : (
                     <div className="rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/70">
                       No blogs found. Try another search term.
                     </div>
