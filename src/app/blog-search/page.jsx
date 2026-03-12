@@ -221,7 +221,7 @@ export default function BlogSearchPage() {
 
           <motion.div
             animate={titleControls}
-            className="absolute inset-x-4 top-25 md:top-27.5 z-10 text-center md:inset-x-6"
+            className="absolute inset-x-4 top-27.5 z-10 text-center md:inset-x-6"
           >
             <h1 className="text-3xl font-semibold tracking-tight text-white md:text-5xl">
               Search blogs like ChatGPT
@@ -235,7 +235,7 @@ export default function BlogSearchPage() {
           {layout && (
             <motion.div
               animate={searchControls}
-              className="absolute z-20"
+              className="absolute z-20 mt-3 md:mt-0"
             >
               <SearchBar
                 query={query}
