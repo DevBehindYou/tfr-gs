@@ -224,11 +224,10 @@ export default function BlogSearchPage() {
             className="absolute inset-x-4 top-27.5 z-10 text-center md:inset-x-6"
           >
             <h1 className="text-2xl font-semibold tracking-tight text-white md:text-5xl">
-              Search blogs like ChatGPT
+              One Search. Every Insight.
             </h1>
             <p className="mx-auto mt-3 max-w-2xl text-sm text-white/70 md:text-base">
-              Type a topic, press Enter, and the search bar moves to the top
-              right as the matching blog cards load.
+              Experience a search engine for our blogs that feels as intuitive as <span className="font-bold italic text-white">ChatGPT</span>.
             </p>
           </motion.div>
 
