@@ -18,7 +18,7 @@ const emptyForm = {
   href: "",
   tags: "",
   platform: "WordPress",
-  platformIcon: "/icons/WordPress.png",
+  platformIcon: "/icons/wordpress.png",
 };
 
 export default function AdminBlogsPage() {
