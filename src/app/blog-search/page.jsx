@@ -213,7 +213,7 @@ export default function BlogSearchPage() {
             playsInline
             className="absolute inset-0 h-full w-full object-cover"
           >
-            <source src="/videos/search-bg.mp4" type="video/mp4" />
+            <source src="https://thefirstranker.com/wp-content/uploads/2026/03/search-bg.mp4" type="video/mp4" />
           </video>
 
           <div className="absolute inset-0 bg-black/45" />
