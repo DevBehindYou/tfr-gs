@@ -256,7 +256,7 @@ export default function AdminQueryPanel() {
 
   return (
     <main className="min-h-screen bg-[#0A0A0B] px-4 py-6 text-white sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_38%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.45)] sm:p-6 lg:p-8">
+      <div className="mx-auto max-w-7xl rounded-4xl border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_38%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.45)] sm:p-6 lg:p-8">
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-sm text-white/55">Admin panel</p>
@@ -269,7 +269,7 @@ export default function AdminQueryPanel() {
             <button
               onClick={handleExportCsv}
               disabled={isExporting || !items.length}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isExporting ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -281,7 +281,7 @@ export default function AdminQueryPanel() {
 
             <Link
               href="/admin"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10"
             >
               <Shield className="h-4 w-4" />
               Admin Panel
@@ -289,7 +289,7 @@ export default function AdminQueryPanel() {
 
             <button
               onClick={handleLogout}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10"
             >
               <LogOut className="h-4 w-4" />
               Logout
@@ -305,11 +305,11 @@ export default function AdminQueryPanel() {
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Search by name, email, category"
-              className="h-12 w-full rounded-full border border-white/12 bg-white/[0.06] pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/35"
+              className="h-12 w-full rounded-full border border-white/12 bg-white/6 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/35"
             />
           </div>
 
-          <div className="flex h-12 items-center gap-3 rounded-full border border-white/12 bg-white/[0.06] px-4">
+          <div className="flex h-12 items-center gap-3 rounded-full border border-white/12 bg-white/6 px-4">
             <Filter className="h-4 w-4 text-white/45" />
             <select
               value={statusFilter}
@@ -333,19 +333,19 @@ export default function AdminQueryPanel() {
         </div>
 
         <div className="mb-6 grid gap-4 md:grid-cols-3">
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
+          <div className="rounded-3xl border border-white/10 bg-white/4 p-5">
             <p className="text-sm text-white/55">Total queries</p>
             <p className="mt-2 text-3xl font-semibold text-white">
               {counts.total}
             </p>
           </div>
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
+          <div className="rounded-3xl border border-white/10 bg-white/4 p-5">
             <p className="text-sm text-white/55">New</p>
             <p className="mt-2 text-3xl font-semibold text-white">
               {counts.newCount}
             </p>
           </div>
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
+          <div className="rounded-3xl border border-white/10 bg-white/4 p-5">
             <p className="text-sm text-white/55">Resolved</p>
             <p className="mt-2 text-3xl font-semibold text-white">
               {counts.resolvedCount}
@@ -354,7 +354,7 @@ export default function AdminQueryPanel() {
         </div>
 
         {isLoading ? (
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-10 text-center text-white/70">
+          <div className="rounded-3xl border border-white/10 bg-white/3 p-10 text-center text-white/70">
             <span className="inline-flex items-center gap-2">
               <Loader2 className="h-4 w-4 animate-spin" />
               Loading queries...
@@ -373,7 +373,7 @@ export default function AdminQueryPanel() {
             {visibleItems.map((item) => (
               <article
                 key={item.id}
-                className="rounded-[28px] border border-white/10 bg-white/[0.04] p-5 shadow-[0_12px_40px_rgba(0,0,0,0.18)]"
+                className="rounded-[28px] border border-white/10 bg-white/4 p-5 shadow-[0_12px_40px_rgba(0,0,0,0.18)]"
               >
                 <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="min-w-0 flex-1 space-y-4">
@@ -392,10 +392,10 @@ export default function AdminQueryPanel() {
                     </div>
 
                     <div className="min-w-0">
-                      <h2 className="break-words text-2xl font-semibold text-white [overflow-wrap:anywhere]">
+                      <h2 className="wrap-break-word text-2xl font-semibold text-white">
                         {item.fullName}
                       </h2>
-                      <p className="mt-1 break-words text-sm text-white/60 [overflow-wrap:anywhere]">
+                      <p className="mt-1 wrap-break-word text-sm text-white/60">
                         {item.emailAddress}
                       </p>
                     </div>
@@ -405,7 +405,7 @@ export default function AdminQueryPanel() {
                         <p className="text-xs uppercase tracking-[0.16em] text-white/35">
                           Phone Number
                         </p>
-                        <p className="mt-2 break-words text-sm text-white/85 [overflow-wrap:anywhere]">
+                        <p className="mt-2 wrap-break-word text-sm text-white/85">
                           {item.phoneNumber}
                         </p>
                       </div>
@@ -414,7 +414,7 @@ export default function AdminQueryPanel() {
                         <p className="text-xs uppercase tracking-[0.16em] text-white/35">
                           Category
                         </p>
-                        <p className="mt-2 break-words text-sm text-white/85 [overflow-wrap:anywhere]">
+                        <p className="mt-2 wrap-break-word text-sm text-white/85">
                           {item.category}
                         </p>
                       </div>
@@ -423,7 +423,7 @@ export default function AdminQueryPanel() {
                         <p className="text-xs uppercase tracking-[0.16em] text-white/35">
                           Company Name
                         </p>
-                        <p className="mt-2 break-words text-sm text-white/85 [overflow-wrap:anywhere]">
+                        <p className="mt-2 wrap-break-word text-sm text-white/85">
                           {item.companyName || "Not provided"}
                         </p>
                       </div>
@@ -442,27 +442,27 @@ export default function AdminQueryPanel() {
                       <p className="text-xs uppercase tracking-[0.16em] text-white/35">
                         Type your query here
                       </p>
-                      <p className="mt-2 max-w-full overflow-hidden whitespace-pre-wrap break-words text-sm leading-7 text-white/75 [overflow-wrap:anywhere] [word-break:break-word]">
+                      <p className="mt-2 max-w-full overflow-hidden whitespace-pre-wrap wrap-break-word text-sm leading-7 text-white/75 [word-break:break-word]">
                         {item.query}
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex min-w-[220px] flex-col gap-3 rounded-3xl border border-white/10 bg-black/20 p-4 lg:w-[220px]">
+                  <div className="flex min-w-55 flex-col gap-3 rounded-3xl border border-white/10 bg-black/20 p-4 lg:w-55">
                     <p className="text-sm font-medium text-white">
                       Update status
                     </p>
 
                     <button
                       onClick={() => updateStatus(item.id, "new")}
-                      className="h-11 rounded-full border border-white/10 bg-white/[0.05] text-sm text-white transition hover:bg-white/10"
+                      className="h-11 rounded-full border border-white/10 bg-white/5 text-sm text-white transition hover:bg-white/10"
                     >
                       Mark as new
                     </button>
 
                     <button
                       onClick={() => updateStatus(item.id, "in-progress")}
-                      className="h-11 rounded-full border border-white/10 bg-white/[0.05] text-sm text-white transition hover:bg-white/10"
+                      className="h-11 rounded-full border border-white/10 bg-white/5 text-sm text-white transition hover:bg-white/10"
                     >
                       Mark in progress
                     </button>
@@ -492,7 +492,7 @@ export default function AdminQueryPanel() {
             ))}
 
             {items.length === 0 ? (
-              <div className="rounded-3xl border border-dashed border-white/15 bg-white/[0.03] p-10 text-center text-white/70">
+              <div className="rounded-3xl border border-dashed border-white/15 bg-white/3 p-10 text-center text-white/70">
                 No query records found.
               </div>
             ) : null}
@@ -501,7 +501,7 @@ export default function AdminQueryPanel() {
               <div className="flex justify-center pt-2">
                 <button
                   onClick={() => setVisibleCount((prev) => prev + 10)}
-                  className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.05] px-6 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+                  className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 py-3 text-sm font-medium text-white transition hover:bg-white/10"
                 >
                   Load More
                 </button>
