@@ -203,6 +203,7 @@ export default function QueryFormWindow() {
                       value={formData.fullName}
                       onChange={(e) => updateField('fullName', e.target.value)}
                       placeholder="Enter your full name"
+                      maxLength={30}
                       className="h-12 w-full rounded-xl border border-[#7c3aed]/25 bg-transparent px-4 text-sm text-[#141414] outline-none transition placeholder:text-[#6b7280] focus:border-[#7c3aed]"
                       required
                     />
@@ -217,6 +218,7 @@ export default function QueryFormWindow() {
                       value={formData.emailAddress}
                       onChange={(e) => updateField('emailAddress', e.target.value)}
                       placeholder="Enter your email address"
+                      maxLength={35}
                       className="h-12 w-full rounded-xl border border-[#7c3aed]/25 bg-transparent px-4 text-sm text-[#141414] outline-none transition placeholder:text-[#6b7280] focus:border-[#7c3aed]"
                       required
                     />
@@ -287,7 +289,8 @@ export default function QueryFormWindow() {
                     value={formData.companyName}
                     onChange={(e) => updateField('companyName', e.target.value)}
                     placeholder="Company name if any"
-                    className="h-12 w-full rounded-xl border border-[#7c3aed]/25 bg-transparent px-4 text-sm text-[#141414] outline-none transition placeholder:text-[#6b7280] focus:border-[#7c3aed]"
+                    maxLength={50}
+                    className="h-12 w-full rounded-xl border border-[#7c3aed]/25 bg-transparent px-4 text-sm text-[#141414] outline-none transition placeholder:text-[#6b7280] focus:border-[#604502]"
                   />
                 </label>
 
@@ -299,9 +302,13 @@ export default function QueryFormWindow() {
                     value={formData.query}
                     onChange={(e) => updateField('query', e.target.value)}
                     placeholder="Write your query"
-                    className="min-h-25 w-full rounded-xl border border-[#7c3aed]/25 bg-transparent px-4 py-4 text-sm text-[#141414] outline-none transition placeholder:text-[#6b7280] focus:border-[#7c3aed]"
+                    maxLength={120}
+                    className="min-h-10 w-full resize-none rounded-xl border border-[#604502]/25 bg-transparent px-4 py-4 text-sm text-[#141414] outline-none transition placeholder:text-[#6b7280] focus:border-[#604502] wrap-anywhere [word-break:break-word]"
                     required
                   />
+                  <div className="mt-1 text-right text-xs text-[#6b7280]">
+                    {formData.query.length}/120
+                  </div>
                 </label>
 
                 <label className="flex items-start gap-2 text-sm text-[#3f3f46]">
