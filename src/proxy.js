@@ -3,6 +3,7 @@ import { COOKIE_NAME, verifySessionToken } from "./lib/auth";
 
 export async function proxy(request) {
   const { pathname } = request.nextUrl;
+  const method = request.method;
   const token = request.cookies.get(COOKIE_NAME)?.value;
   const session = await verifySessionToken(token);
 
@@ -10,10 +11,10 @@ export async function proxy(request) {
     pathname.startsWith("/admin") ||
     pathname.startsWith("/admin-query-panel");
 
-  const isProtectedApi =
-    pathname.startsWith("/api/queries");
+  const isProtectedQueryApi =
+    pathname.startsWith("/api/queries") && method !== "POST";
 
-  if (!session && isProtectedApi) {
+  if (!session && isProtectedQueryApi) {
     return NextResponse.json(
       {
         success: false,
