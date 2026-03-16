@@ -1,7 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, Pencil, Plus, Search, Trash2, X } from "lucide-react";
+import {
+  ExternalLink,
+  FileText,
+  Loader2,
+  MessageSquare,
+  Pencil,
+  Plus,
+  Search,
+  Trash2,
+  X,
+} from "lucide-react";
 
 const platformIcons = {
   Medium: "/icons/medium.png",
@@ -206,12 +217,12 @@ export default function AdminBlogsPage() {
   };
 
   const handleLogout = async () => {
-  await fetch("/api/logout", {
-    method: "POST",
-  });
+    await fetch("/api/logout", {
+      method: "POST",
+    });
 
-  window.location.href = "/login";
-};
+    window.location.href = "/login";
+  };
 
   return (
     <main className="min-h-screen bg-[#f5f5f7] p-4 md:p-8">
@@ -227,7 +238,24 @@ export default function AdminBlogsPage() {
               </p>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link
+                href="/query-form-window"
+                target="_blank"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#e5e5e5] px-5 py-3 text-sm font-medium text-[#111111] transition hover:bg-[#f5f5f5]"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Query Form
+              </Link>
+
+              <Link
+                href="/admin-query-panel"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#e5e5e5] px-5 py-3 text-sm font-medium text-[#111111] transition hover:bg-[#f5f5f5]"
+              >
+                <MessageSquare className="h-4 w-4" />
+                Query Panel
+              </Link>
+
               <button
                 onClick={handleLogout}
                 className="inline-flex items-center justify-center rounded-full border border-[#e5e5e5] px-5 py-3 text-sm font-medium text-[#111111] transition hover:bg-[#f5f5f5]"

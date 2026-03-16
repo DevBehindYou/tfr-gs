@@ -1,140 +1,177 @@
-'use client'
+"use client";
 
-import { Clock3, Filter, Search, Trash2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import Link from "next/link";
+import { LogOut, Shield } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Clock3,
+  Filter,
+  Loader2,
+  Search,
+  Trash2,
+} from "lucide-react";
 
 function formatDate(value) {
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  }).format(new Date(value))
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(value));
 }
 
 function getStatusClasses(status) {
-  if (status === 'new') {
-    return 'border-emerald-400/20 bg-emerald-400/10 text-emerald-200'
+  if (status === "new") {
+    return "border-emerald-400/20 bg-emerald-400/10 text-emerald-200";
   }
 
-  if (status === 'in-progress') {
-    return 'border-amber-400/20 bg-amber-400/10 text-amber-200'
+  if (status === "in-progress") {
+    return "border-amber-400/20 bg-amber-400/10 text-amber-200";
   }
 
-  return 'border-sky-400/20 bg-sky-400/10 text-sky-200'
+  return "border-sky-400/20 bg-sky-400/10 text-sky-200";
 }
 
 export default function AdminQueryPanel() {
-  const [searchValue, setSearchValue] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [items, setItems] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [searchValue, setSearchValue] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [items, setItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   async function loadQueries(currentSearch = searchValue, currentStatus = statusFilter) {
     try {
-      setIsLoading(true)
-      setErrorMessage('')
+      setIsLoading(true);
+      setErrorMessage("");
 
-      const params = new URLSearchParams()
+      const params = new URLSearchParams();
 
       if (currentSearch.trim()) {
-        params.set('search', currentSearch.trim())
+        params.set("search", currentSearch.trim());
       }
 
-      if (currentStatus && currentStatus !== 'all') {
-        params.set('status', currentStatus)
+      if (currentStatus && currentStatus !== "all") {
+        params.set("status", currentStatus);
       }
 
-      const queryString = params.toString()
-      const url = queryString ? `/api/queries?${queryString}` : '/api/queries'
+      const queryString = params.toString();
+      const url = queryString ? `/api/queries?${queryString}` : "/api/queries";
 
       const response = await fetch(url, {
-        method: 'GET',
-        cache: 'no-store',
-      })
+        method: "GET",
+        cache: "no-store",
+      });
 
-      const result = await response.json()
+      const result = await response.json();
 
-      console.log('Admin query API result:', result)
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Failed to load queries.')
+      if (response.status === 401) {
+        window.location.href = "/login";
+        return;
       }
 
-      setItems(Array.isArray(result.data) ? result.data : [])
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to load queries.");
+      }
+
+      setItems(Array.isArray(result.data) ? result.data : []);
     } catch (error) {
-      console.error('Load queries error:', error)
-      setErrorMessage(error.message || 'Something went wrong.')
-      setItems([])
+      setErrorMessage(error.message || "Something went wrong.");
+      setItems([]);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    loadQueries('', 'all')
-  }, [])
+    loadQueries("", "all");
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      loadQueries(searchValue, statusFilter)
-    }, 300)
+      loadQueries(searchValue, statusFilter);
+    }, 300);
 
-    return () => clearTimeout(timer)
-  }, [searchValue, statusFilter])
+    return () => clearTimeout(timer);
+  }, [searchValue, statusFilter]);
 
   async function updateStatus(id, nextStatus) {
     try {
       const response = await fetch(`/api/queries/${id}`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ status: nextStatus }),
-      })
+      });
 
-      const result = await response.json()
+      const result = await response.json();
+
+      if (response.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
 
       if (!response.ok) {
-        throw new Error(result.message || 'Failed to update status.')
+        throw new Error(result.message || "Failed to update status.");
       }
 
       setItems((prev) =>
         prev.map((item) =>
           item.id === id ? { ...item, status: nextStatus } : item
         )
-      )
+      );
     } catch (error) {
-      alert(error.message || 'Something went wrong.')
+      alert(error.message || "Something went wrong.");
     }
   }
 
   async function deleteQuery(id) {
-    const confirmed = window.confirm('Delete this query?')
-    if (!confirmed) return
+    const confirmed = window.confirm("Delete this query?");
+    if (!confirmed) return;
 
     try {
+      setIsDeleting(id);
+
       const response = await fetch(`/api/queries/${id}`, {
-        method: 'DELETE',
-      })
+        method: "DELETE",
+      });
 
-      const result = await response.json()
+      const result = await response.json();
 
-      if (!response.ok) {
-        throw new Error(result.message || 'Failed to delete query.')
+      if (response.status === 401) {
+        window.location.href = "/login";
+        return;
       }
 
-      setItems((prev) => prev.filter((item) => item.id !== id))
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to delete query.");
+      }
+
+      setItems((prev) => prev.filter((item) => item.id !== id));
     } catch (error) {
-      alert(error.message || 'Something went wrong.')
+      alert(error.message || "Something went wrong.");
+    } finally {
+      setIsDeleting("");
     }
   }
 
-  const totalQueries = items.length
-  const newQueries = items.filter((item) => item.status === 'new').length
-  const resolvedQueries = items.filter((item) => item.status === 'resolved').length
+    async function handleLogout() {
+      await fetch("/api/logout", {
+        method: "POST",
+      });
+
+      window.location.href = "/login";
+    }
+
+  const counts = useMemo(() => {
+    return {
+      total: items.length,
+      newCount: items.filter((item) => item.status === "new").length,
+      resolvedCount: items.filter((item) => item.status === "resolved").length,
+    };
+  }, [items]);
 
   return (
     <main className="min-h-screen bg-[#0A0A0B] px-4 py-6 text-white sm:px-6 lg:px-8">
@@ -147,69 +184,83 @@ export default function AdminQueryPanel() {
             </h1>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <div className="flex h-12 min-w-70 items-center gap-3 rounded-full border border-white/12 bg-white/6 px-4 backdrop-blur-xl">
-              <Search className="h-4 w-4 text-white/45" />
-              <input
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                placeholder="Search by name, email, category"
-                className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/35"
-              />
-            </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Link
+              href="/admin"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+            >
+              <Shield className="h-4 w-4" />
+              Admin Panel
+            </Link>
 
-            <div className="flex h-12 items-center gap-3 rounded-full border border-white/12 bg-white/6 px-4 backdrop-blur-xl">
-              <Filter className="h-4 w-4 text-white/45" />
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-transparent text-sm text-white outline-none"
-              >
-                <option value="all" className="bg-black text-white">
-                  All status
-                </option>
-                <option value="new" className="bg-black text-white">
-                  New
-                </option>
-                <option value="in-progress" className="bg-black text-white">
-                  In progress
-                </option>
-                <option value="resolved" className="bg-black text-white">
-                  Resolved
-                </option>
-              </select>
-            </div>
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
+            </button>
+          </div>
+        </div>
+
+        <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div className="relative w-full md:max-w-md">
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/45" />
+            <input
+              type="text"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search by name, email, category"
+              className="h-12 w-full rounded-full border border-white/12 bg-white/6 pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/35"
+            />
+          </div>
+
+          <div className="flex h-12 items-center gap-3 rounded-full border border-white/12 bg-white/6 px-4">
+            <Filter className="h-4 w-4 text-white/45" />
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-transparent text-sm text-white outline-none"
+            >
+              <option value="all" className="bg-black text-white">All status</option>
+              <option value="new" className="bg-black text-white">New</option>
+              <option value="in-progress" className="bg-black text-white">In progress</option>
+              <option value="resolved" className="bg-black text-white">Resolved</option>
+            </select>
           </div>
         </div>
 
         <div className="mb-6 grid gap-4 md:grid-cols-3">
           <div className="rounded-3xl border border-white/10 bg-white/4 p-5">
             <p className="text-sm text-white/55">Total queries</p>
-            <p className="mt-2 text-3xl font-semibold text-white">{totalQueries}</p>
+            <p className="mt-2 text-3xl font-semibold text-white">{counts.total}</p>
           </div>
           <div className="rounded-3xl border border-white/10 bg-white/4 p-5">
             <p className="text-sm text-white/55">New</p>
-            <p className="mt-2 text-3xl font-semibold text-white">{newQueries}</p>
+            <p className="mt-2 text-3xl font-semibold text-white">{counts.newCount}</p>
           </div>
           <div className="rounded-3xl border border-white/10 bg-white/4 p-5">
             <p className="text-sm text-white/55">Resolved</p>
-            <p className="mt-2 text-3xl font-semibold text-white">{resolvedQueries}</p>
+            <p className="mt-2 text-3xl font-semibold text-white">{counts.resolvedCount}</p>
           </div>
         </div>
 
-        {isLoading && (
+        {isLoading ? (
           <div className="rounded-3xl border border-white/10 bg-white/3 p-10 text-center text-white/70">
-            Loading queries...
+            <span className="inline-flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Loading queries...
+            </span>
           </div>
-        )}
+        ) : null}
 
-        {errorMessage && (
+        {errorMessage ? (
           <div className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-200">
             {errorMessage}
           </div>
-        )}
+        ) : null}
 
-        {!isLoading && !errorMessage && (
+        {!isLoading ? (
           <div className="space-y-5">
             {items.map((item) => (
               <article
@@ -219,9 +270,7 @@ export default function AdminQueryPanel() {
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="space-y-4">
                     <div className="flex flex-wrap items-center gap-3">
-                      <span
-                        className={`rounded-full border px-3 py-1 text-xs ${getStatusClasses(item.status)}`}
-                      >
+                      <span className={`rounded-full border px-3 py-1 text-xs ${getStatusClasses(item.status)}`}>
                         {item.status}
                       </span>
                       <span className="inline-flex items-center gap-2 text-sm text-white/55">
@@ -231,55 +280,35 @@ export default function AdminQueryPanel() {
                     </div>
 
                     <div>
-                      <h2 className="text-2xl font-semibold text-white">
-                        {item.fullName}
-                      </h2>
-                      <p className="mt-1 text-sm text-white/60">
-                        {item.emailAddress}
-                      </p>
+                      <h2 className="text-2xl font-semibold text-white">{item.fullName}</h2>
+                      <p className="mt-1 text-sm text-white/60">{item.emailAddress}</p>
                     </div>
 
                     <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
                       <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                        <p className="text-xs uppercase tracking-[0.16em] text-white/35">
-                          Phone Number
-                        </p>
+                        <p className="text-xs uppercase tracking-[0.16em] text-white/35">Phone Number</p>
                         <p className="mt-2 text-sm text-white/85">{item.phoneNumber}</p>
                       </div>
 
                       <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                        <p className="text-xs uppercase tracking-[0.16em] text-white/35">
-                          Category
-                        </p>
+                        <p className="text-xs uppercase tracking-[0.16em] text-white/35">Category</p>
                         <p className="mt-2 text-sm text-white/85">{item.category}</p>
                       </div>
 
                       <div className="rounded-2xl border border-white/10 bg-black/20 p-4 xl:col-span-2">
-                        <p className="text-xs uppercase tracking-[0.16em] text-white/35">
-                          Company Name
-                        </p>
-                        <p className="mt-2 text-sm text-white/85">
-                          {item.companyName || 'Not provided'}
-                        </p>
+                        <p className="text-xs uppercase tracking-[0.16em] text-white/35">Company Name</p>
+                        <p className="mt-2 text-sm text-white/85">{item.companyName || "Not provided"}</p>
                       </div>
 
                       <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                        <p className="text-xs uppercase tracking-[0.16em] text-white/35">
-                          Newsletter
-                        </p>
-                        <p className="mt-2 text-sm text-white/85">
-                          {item.newsletter ? 'Yes' : 'No'}
-                        </p>
+                        <p className="text-xs uppercase tracking-[0.16em] text-white/35">Newsletter</p>
+                        <p className="mt-2 text-sm text-white/85">{item.newsletter ? "Yes" : "No"}</p>
                       </div>
                     </div>
 
                     <div className="rounded-3xl border border-white/10 bg-black/20 p-4">
-                      <p className="text-xs uppercase tracking-[0.16em] text-white/35">
-                        Type your query here
-                      </p>
-                      <p className="mt-2 text-sm leading-7 text-white/75">
-                        {item.query}
-                      </p>
+                      <p className="text-xs uppercase tracking-[0.16em] text-white/35">Type your query here</p>
+                      <p className="mt-2 text-sm leading-7 text-white/75">{item.query}</p>
                     </div>
                   </div>
 
@@ -287,21 +316,21 @@ export default function AdminQueryPanel() {
                     <p className="text-sm font-medium text-white">Update status</p>
 
                     <button
-                      onClick={() => updateStatus(item.id, 'new')}
+                      onClick={() => updateStatus(item.id, "new")}
                       className="h-11 rounded-full border border-white/10 bg-white/5 text-sm text-white transition hover:bg-white/10"
                     >
                       Mark as new
                     </button>
 
                     <button
-                      onClick={() => updateStatus(item.id, 'in-progress')}
+                      onClick={() => updateStatus(item.id, "in-progress")}
                       className="h-11 rounded-full border border-white/10 bg-white/5 text-sm text-white transition hover:bg-white/10"
                     >
                       Mark in progress
                     </button>
 
                     <button
-                      onClick={() => updateStatus(item.id, 'resolved')}
+                      onClick={() => updateStatus(item.id, "resolved")}
                       className="h-11 rounded-full bg-white text-sm text-black transition hover:scale-[1.01]"
                     >
                       Mark resolved
@@ -309,9 +338,14 @@ export default function AdminQueryPanel() {
 
                     <button
                       onClick={() => deleteQuery(item.id)}
-                      className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 text-sm text-red-200 transition hover:bg-red-500/20"
+                      disabled={isDeleting === item.id}
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 text-sm text-red-200 transition hover:bg-red-500/20 disabled:opacity-50"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      {isDeleting === item.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
                       Delete query
                     </button>
                   </div>
@@ -319,14 +353,14 @@ export default function AdminQueryPanel() {
               </article>
             ))}
 
-            {items.length === 0 && (
+            {items.length === 0 ? (
               <div className="rounded-3xl border border-dashed border-white/15 bg-white/3 p-10 text-center text-white/70">
                 No query records found.
               </div>
-            )}
+            ) : null}
           </div>
-        )}
+        ) : null}
       </div>
     </main>
-  )
+  );
 }

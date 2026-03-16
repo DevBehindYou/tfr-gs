@@ -6,21 +6,39 @@ export async function proxy(request) {
   const token = request.cookies.get(COOKIE_NAME)?.value;
   const session = await verifySessionToken(token);
 
-  if (pathname.startsWith("/admin")) {
-    if (!session) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
+  const isProtectedPage =
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/admin-query-panel");
+
+  const isProtectedApi =
+    pathname.startsWith("/api/queries");
+
+  if (!session && isProtectedApi) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Unauthorized",
+      },
+      { status: 401 }
+    );
   }
 
-  if (pathname.startsWith("/login")) {
-    if (session) {
-      return NextResponse.redirect(new URL("/admin", request.url));
-    }
+  if (!session && isProtectedPage) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (pathname.startsWith("/login") && session) {
+    return NextResponse.redirect(new URL("/admin", request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/login"],
+  matcher: [
+    "/admin/:path*",
+    "/admin-query-panel/:path*",
+    "/api/queries/:path*",
+    "/login",
+  ],
 };

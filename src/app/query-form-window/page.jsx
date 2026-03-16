@@ -141,27 +141,27 @@ export default function QueryFormWindow() {
   }
 
   return (
-    <section className="bg-[#f7f2ea] px-4 py-12 text-[#141414] sm:px-6 lg:px-8 lg:py-20">
+    <section className="bg-[#f7f2ea] px-0 md:px-4 py-12 text-[#141414] sm:px-6 lg:px-8 lg:py-20">
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-10 rounded-4xl border border-[#2b2b2b]/10 bg-transparent p-6 xl:grid-cols-[0.95fr_1.35fr] xl:gap-14 xl:p-10">
+        <div className="grid gap-10 rounded-4xl border border-[#5c4500]/10 bg-transparent p-2 md:p-6 xl:grid-cols-[0.95fr_1.35fr] xl:gap-14 xl:p-10">
           <div className="flex flex-col justify-center">
-            <p className="mb-4 inline-flex w-fit rounded-full border border-[#7c3aed]/30 bg-[#7c3aed]/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-[#bca7ff]">
+            <p className="mb-4 inline-flex w-fit rounded-full border border-[#5c4500]/30 bg-[#5c4500]/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-[#5c4500]">
               Contact our team
             </p>
 
             <h2 className="max-w-130 text-4xl font-semibold leading-[1.05] text-[#141414] sm:text-5xl lg:text-6xl">
-              <span className="text-[#7c3aed]">Let’s build a better</span>
+              <span className="text-[#5c4500]">Let’s build a better</span>
               <br />
               future together
             </h2>
 
-            <div className="mt-6 flex items-center gap-3 text-[#a78bfa]">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#7c3aed]/35 bg-[#7c3aed]/10">
+            <div className="mt-6 flex items-center gap-3 text-[#5c4500]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#5c4500]/35 bg-[#5c4500]/10">
                 <PhoneCall className="h-5 w-5" />
               </div>
               <a
                 href="tel:+918790337974"
-                className="text-base font-medium text-[#5b21b6] transition hover:text-[#141414]"
+                className="text-base font-medium text-[#5c4500] transition hover:text-[#141414]"
               >
                 +91 8790337974
               </a>
@@ -175,14 +175,14 @@ export default function QueryFormWindow() {
             <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
               <button
                 type="button"
-                className="inline-flex h-12 items-center justify-center rounded-xl bg-[#7c3aed] px-6 text-sm font-semibold text-white transition hover:bg-[#6d28d9]"
+                className="inline-flex h-12 items-center justify-center rounded-xl bg-[#4f3b00] px-6 text-sm font-semibold text-white transition hover:bg-[#6d28d9]"
               >
                 Submit Project Brief
               </button>
 
               <a
                 href="#"
-                className="inline-flex items-center gap-2 text-sm font-medium text-[#5b21b6] underline underline-offset-4 transition hover:text-[#141414]"
+                className="inline-flex items-center gap-2 text-sm font-medium text-[#5c4500] underline underline-offset-4 transition hover:text-[#141414]"
               >
                 Alternatively, book a discovery call
                 <ArrowUpRight className="h-4 w-4" />
@@ -226,11 +226,11 @@ export default function QueryFormWindow() {
                     <span className="mb-1 block text-sm font-medium text-[#27272a]">
                       Phone Number
                     </span>
-                    <div className="flex overflow-hidden rounded-xl border border-[#7c3aed]/25 focus-within:border-[#7c3aed]">
+                    <div className="flex overflow-hidden rounded-xl border border-[#5c4500]/25 focus-within:border-[#5c4500]">
                       <select
                         value={formData.countryCode}
                         onChange={(e) => updateField('countryCode', e.target.value)}
-                        className="h-12 min-w-8 border-r border-[#7c3aed]/20 bg-[#faf7f2] px-3 text-sm text-[#141414] outline-none"
+                        className="h-12 min-w-8 border-r border-[#5c4500]/20 bg-[#faf7f2] px-3 text-sm text-[#141414] outline-none"
                       >
                         {countryCodes.map((item) => (
                           <option key={item.key} value={item.key}>
@@ -251,7 +251,7 @@ export default function QueryFormWindow() {
                           value={formData.phoneNumber}
                           onChange={(e) => handlePhoneChange(e.target.value)}
                           placeholder={`${selectedCountry.value} Enter phone number`}
-                          className="w-full bg-transparent text-sm text-[#141414] outline-none placeholder:text-[#6b7280]"
+                          className="w-full bg-transparent text-sm text-[#141414] outline-none placeholder:text-[#5c4500]"
                           required
                         />
                       </div>
@@ -265,7 +265,7 @@ export default function QueryFormWindow() {
                     <select
                       value={formData.category}
                       onChange={(e) => updateField('category', e.target.value)}
-                      className="h-12 w-full rounded-xl border border-[#7c3aed]/25 bg-transparent px-4 text-sm text-[#141414] outline-none transition focus:border-[#7c3aed]"
+                      className="h-12 w-full rounded-xl border border-[#7c3aed]/25 bg-transparent px-4 text-sm text-[#3a2c00] outline-none transition focus:border-[#5c4500]"
                       required
                     >
                       <option value="">Select a Category</option>
@@ -309,7 +309,7 @@ export default function QueryFormWindow() {
                     type="checkbox"
                     checked={formData.newsletter}
                     onChange={(e) => updateField('newsletter', e.target.checked)}
-                    className="mt-1 h-4 w-4 rounded border border-[#7c3aed]/40 accent-[#7c3aed]"
+                    className="mt-1 h-4 w-4 rounded border border-[#604502]/40 accent-[#604502]"
                   />
                   <span>
                     I am happy to receive updates and newsletters from The First Ranker.
@@ -321,7 +321,7 @@ export default function QueryFormWindow() {
                     type="checkbox"
                     checked={formData.acceptTerms}
                     onChange={(e) => updateField('acceptTerms', e.target.checked)}
-                    className="mt-1 h-4 w-4 rounded border border-[#7c3aed]/40 accent-[#7c3aed]"
+                    className="mt-1 h-4 w-4 rounded border border-[#604502]/40 accent-[#604502]"
                     required
                   />
                   <span>
@@ -366,7 +366,7 @@ export default function QueryFormWindow() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="mx-auto mt-8 inline-flex h-12 items-center justify-center rounded-xl border border-[#7c3aed]/30 px-6 text-sm font-medium text-[#000000] transition hover:bg-[#7c3aed]/10 hover:text-[#141414]"
+                  className="mx-auto mt-8 inline-flex h-12 items-center justify-center rounded-xl border border-[#604502]/30 px-6 text-sm font-medium text-[#000000] transition hover:bg-[#7c3aed]/10 hover:text-[#141414]"
                 >
                   Submit another query
                 </button>
