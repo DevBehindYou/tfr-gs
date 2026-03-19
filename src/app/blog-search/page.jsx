@@ -8,6 +8,8 @@ import {
 } from "framer-motion";
 import { Search, ArrowRight } from "lucide-react";
 import BlogCard from "../components/BlogCard";
+import { Analytics } from "@vercel/analytics/next" //Vercel-Analytics
+import { track } from '@vercel/analytics'; //Vercel-Analytics
 
 export default function BlogSearchPage() {
   const [query, setQuery] = useState("");
@@ -123,6 +125,9 @@ export default function BlogSearchPage() {
     const trimmedQuery = query.trim();
     const requestPromise = fetchBlogs(trimmedQuery);
 
+    // Track the search event
+    track('Blog Search', { query: trimmedQuery }); //Vercel-Analytics
+
     if (stage === "idle") {
       setSubmittedQuery(trimmedQuery);
 
@@ -200,6 +205,7 @@ export default function BlogSearchPage() {
   };
 
   return (
+    <>
     <main className="w-full bg-transparent p-0 m-0">
       <div className="w-full overflow-hidden rounded-[18px] border border-white/10 bg-[#0b0712] shadow-2xl">
         <div
@@ -320,6 +326,8 @@ export default function BlogSearchPage() {
         </div>
       </div>
     </main>
+    <Analytics />
+    </>
   );
 }
 
