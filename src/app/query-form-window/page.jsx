@@ -5,10 +5,11 @@ import { useState } from 'react'
 
 const categories = [
   'General Inquiry',
-  'SEO Services',
-  'Website Development',
-  'AI Solutions',
-  'Content Writing',
+  'Backlink Insertion',
+  'Guest Post',
+  'Promotional Blog',
+  'Partnership/Advertising',
+  'Technical Issue/Bug Report',
   'Other',
 ]
 
@@ -145,12 +146,12 @@ export default function QueryFormWindow() {
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 rounded-4xl border border-[#5c4500]/10 bg-transparent p-2 md:p-6 xl:grid-cols-[0.95fr_1.35fr] xl:gap-14 xl:p-10">
           <div className="flex flex-col justify-center">
-            <p className="mb-4 inline-flex w-fit rounded-full border border-[#5c4500]/30 bg-[#5c4500]/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-[#5c4500]">
+            <p className="mb-4 inline-flex w-fit rounded-full border border-[#323B27]/30 bg-[#86844B]/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-[#323B27]">
               Contact our team
             </p>
 
             <h2 className="max-w-130 text-4xl font-semibold leading-[1.05] text-[#141414] sm:text-5xl lg:text-6xl">
-              <span className="text-[#5c4500]">Let’s build a better</span>
+              <span className="text-[#86844B]">Let’s build a better</span>
               <br />
               future together
             </h2>
@@ -161,13 +162,13 @@ export default function QueryFormWindow() {
               </div>
               <a
                 href="tel:+918790337974"
-                className="text-base font-medium text-[#5c4500] transition hover:text-[#141414]"
+                className="text-base font-medium text-[#323B27] transition hover:text-[#141414]"
               >
                 +91 8790337974
               </a>
             </div>
 
-            <p className="mt-8 max-w-117.5 text-base leading-8 text-[#3f3f46] sm:text-lg">
+            <p className="mt-8 max-w-117.5 text-base leading-8 text-[#86844B] sm:text-lg">
               Have a project in mind? Need help with SEO, websites, or AI led growth?
               Our team turns ideas into execution with speed and clarity.
             </p>
@@ -175,7 +176,7 @@ export default function QueryFormWindow() {
             <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
               <button
                 type="button"
-                className="inline-flex h-12 items-center justify-center rounded-xl bg-[#4f3b00] px-6 text-sm font-semibold text-white transition hover:bg-[#6d28d9]"
+                className="inline-flex h-12 items-center justify-center rounded-xl bg-[#86844B] px-6 text-sm font-semibold text-white transition hover:bg-[#323B27]"
               >
                 Submit Project Brief
               </button>
@@ -343,7 +344,7 @@ export default function QueryFormWindow() {
                 <button
                   type="submit"
                   disabled={isSubmitting || !formData.acceptTerms}
-                  className="flex h-14 w-full items-center justify-center rounded-xl bg-[#1d1d1d] px-6 text-base font-semibold text-white transition hover:bg-[#000000] disabled:cursor-not-allowed disabled:opacity-70"
+                  className="flex h-14 w-full items-center justify-center rounded-xl bg-[#323B27] px-6 text-base font-semibold text-white transition hover:bg-[#353536] disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {isSubmitting ? 'Submitting...' : 'Submit the Form'}
                 </button>
